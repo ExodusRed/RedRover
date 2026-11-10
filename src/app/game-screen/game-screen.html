@@ -5,6 +5,9 @@
   <span>Level <b>{{ h.level }}</b></span>
   <span>Score <b>{{ h.score }}</b></span>
   <span class="hide-narrow">Best <b>{{ h.highScore }}</b></span>
+  <button class="mute" (click)="toggleMute()" [attr.aria-label]="muted() ? 'Unmute' : 'Mute'" title="Sound (M)">
+    {{ muted() ? '🔇' : '🔊' }}
+  </button>
   <span class="lives" [attr.aria-label]="h.lives + ' lives'">
     @for (i of [1, 2, 3]; track i) {
       <i [class.lost]="i > h.lives"></i>
@@ -50,10 +53,43 @@
       </div>
     }
     @case ('over') {
-      <div class="overlay">
-        <h2 class="red">Game over</h2>
-        <p>Score <b>{{ h.score }}</b> · Best <b>{{ h.highScore }}</b></p>
-        <p class="hint">Press Space or tap to try again</p>
+      <div class="overlay interactive">
+        <div class="panel" (touchstart)="$event.stopPropagation()" (touchend)="$event.stopPropagation()">
+          <h2 class="red">Game over</h2>
+          <p>Score <b>{{ h.score }}</b> · Level <b>{{ h.level }}</b></p>
+
+          @if (h.score > 0 && submitState() !== 'done') {
+            <form class="submit" (submit)="$event.preventDefault(); submit()">
+              <input
+                [value]="playerName()"
+                (input)="playerName.set($any($event.target).value)"
+                maxlength="16"
+                placeholder="Your name"
+                aria-label="Your name"
+                autocomplete="nickname"
+              />
+              <button type="submit" [disabled]="!playerName().trim() || submitState() === 'sending'">
+                {{ submitState() === 'sending' ? 'Saving…' : 'Save score' }}
+              </button>
+            </form>
+            @if (submitState() === 'error') {
+              <p class="error">{{ submitError() }}</p>
+            }
+          }
+          @if (rank(); as r) {
+            <p class="rank">You placed <b>#{{ r }}</b>!</p>
+          }
+
+          <h3>Leaderboard</h3>
+          @if (topScores(); as top) {
+            <score-table [entries]="top" [highlight]="rank()" />
+          } @else {
+            <p class="hint">Loading…</p>
+          }
+
+          <button class="again" (click)="restart()">Play again</button>
+          <p class="hint">or press Space</p>
+        </div>
       </div>
     }
   }

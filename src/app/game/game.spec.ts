@@ -29,6 +29,17 @@ describe('Game', () => {
     expect(game.score).toBeGreaterThan(0);
   });
 
+  it('reports events for sound effects', () => {
+    const game = new Game();
+    game.steer({ x: 1, y: 0 });
+    game.steer({ x: 0, y: -1 });
+    for (let i = 0; i < 120; i++) game.update(0.016);
+    const types = game.drainEvents().map((e) => e.type);
+    expect(types[0]).toBe('start');
+    expect(types).toContain('cell');
+    expect(game.drainEvents()).toEqual([]); // drained
+  });
+
   it('pauses and resumes', () => {
     const game = new Game();
     game.steer({ x: 1, y: 0 });

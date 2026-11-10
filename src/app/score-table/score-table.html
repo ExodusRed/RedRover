@@ -1,0 +1,14 @@
+@if (entries().length) {
+  <ol>
+    @for (e of entries(); track $index) {
+      <li [class.me]="$index + 1 === highlight()">
+        <span class="rank">{{ $index + 1 }}</span>
+        <span class="name">{{ e.name }}</span>
+        <span class="lvl">L{{ e.level }}</span>
+        <b>{{ e.score }}</b>
+      </li>
+    }
+  </ol>
+} @else {
+  <p class="empty">No scores yet. Be the first!</p>
+}

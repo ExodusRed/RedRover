@@ -8,6 +8,8 @@ describe('GameScreen', () => {
   let fixture: ComponentFixture<GameScreen>;
 
   beforeEach(async () => {
+    // No real server in unit tests: pretend the leaderboard is empty.
+    globalThis.fetch = (async () => new Response(JSON.stringify({ top: [] }))) as typeof fetch;
     await TestBed.configureTestingModule({
       imports: [GameScreen],
       providers: [provideRouter([])],

@@ -25,3 +25,6 @@ i.emp { border: 3px solid #60a5fa; border-radius: 50%; }
 .drones i { border: 3px solid var(--c); border-radius: 50%; background: #26262c; }
 footer { margin-top: 28px; color: var(--muted); font-size: 0.85rem; }
 footer a { color: var(--muted); }
+.board { display: block; }
+.board h2 { margin: 0 0 10px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); text-align: center; }
+.muted { color: var(--muted); text-align: center; margin: 0; }

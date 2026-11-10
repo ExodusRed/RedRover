@@ -34,6 +34,11 @@ export interface Hud {
   emp: number; // seconds of EMP remaining
 }
 
+/** Things that happened during an update — used for sound effects. */
+export type GameEvent =
+  | { type: 'start' | 'cell' | 'emp' | 'empEnd' | 'hit' | 'clear' | 'over' }
+  | { type: 'ram'; chain: number };
+
 const DRONE_ORDER: DroneKind[] = ['hunter', 'interceptor', 'patroller', 'hunter'];
 const HIGH_SCORE_KEY = 'redrover.highscore';
 
@@ -56,6 +61,9 @@ export class Game {
   empChain = 0; // drones knocked out during the current EMP
   stateTime = 0; // seconds since the state last changed
   time = 0; // total running time, for animations
+
+  /** Events since the last call to drainEvents(). */
+  private events: GameEvent[] = [];
 
   /** Floating "+200" style texts. */
   popups: { x: number; y: number; text: string; age: number }[] = [];
@@ -169,7 +177,9 @@ export class Game {
     }
     if (this.state !== 'playing') return;
 
+    const wasEmp = this.empTime > 0;
     this.empTime = Math.max(0, this.empTime - dt);
+    if (wasEmp && this.empTime === 0) this.events.push({ type: 'empEnd' });
     if (this.empTime === 0) this.empChain = 0;
 
     this.moveRover(dt);
@@ -223,11 +233,15 @@ export class Game {
   /** Rover reached a tile: pick up whatever is there. */
   private arrive(t: Point): void {
     const k = key(t);
-    if (this.cells.delete(k)) this.addScore(10);
+    if (this.cells.delete(k)) {
+      this.addScore(10);
+      this.events.push({ type: 'cell' });
+    }
     if (this.emps.delete(k)) {
       this.addScore(50);
       this.empTime = Math.max(3, 7 - this.level * 0.4);
       this.empChain = 0;
+      this.events.push({ type: 'emp' });
     }
   }
 
@@ -309,6 +323,7 @@ export class Game {
         const points = 200 * 2 ** (this.empChain - 1);
         this.addScore(points);
         this.popups.push({ x: dp.x, y: dp.y, text: `+${points}`, age: 0 });
+        this.events.push({ type: 'ram', chain: this.empChain });
         Object.assign(d, mover(this.dock, d.speed), { releaseIn: 3 });
       } else {
         this.lives--;
@@ -344,7 +359,16 @@ export class Game {
     }
   }
 
+  /** Returns and clears the events collected since the last call. */
+  drainEvents(): GameEvent[] {
+    const e = this.events;
+    this.events = [];
+    return e;
+  }
+
   private setState(s: GameState): void {
+    if (s === 'playing' && this.state === 'ready') this.events.push({ type: 'start' });
+    if (s === 'hit' || s === 'clear' || s === 'over') this.events.push({ type: s });
     this.state = s;
     this.stateTime = 0;
   }
