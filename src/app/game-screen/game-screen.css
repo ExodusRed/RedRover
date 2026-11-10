@@ -1,3 +1,92 @@
-body {
-    background-color: black;
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  padding: 8px 16px 16px;
+  gap: 8px;
+}
+
+.hud {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 0.95rem;
+  color: var(--muted);
+  max-width: 1040px;
+  width: 100%;
+  margin: 0 auto;
+}
+.hud b { color: var(--fg); font-variant-numeric: tabular-nums; }
+.back { margin-right: auto; color: var(--muted); text-decoration: none; }
+.back:hover { color: var(--fg); }
+.lives { display: flex; gap: 5px; }
+.lives i { width: 12px; height: 12px; border-radius: 50%; background: var(--red); }
+.lives i.lost { background: var(--border); }
+
+.stage {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  display: grid;
+  place-items: center;
+  touch-action: none;
+  user-select: none;
+}
+canvas { border-radius: 8px; box-shadow: 0 0 0 1px var(--border), 0 20px 60px #e5383b1a; }
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  background: #0d0d0fb3;
+  pointer-events: none;
+}
+.overlay.soft { background: transparent; }
+.overlay h2 { font-size: clamp(1.8rem, 6vw, 3rem); margin: 0 0 8px; }
+.overlay p { margin: 4px 0; }
+.red { color: var(--red); }
+.hint { color: var(--muted); font-size: 0.9rem; margin-top: 14px !important; }
+
+.emp-badge {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  translate: -50%;
+  background: #60a5fa;
+  color: #0d0d0f;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 99px;
+  font-size: 0.85rem;
+}
+
+/* On-screen d-pad, only on touch devices. */
+.pad { display: none; }
+@media (pointer: coarse) {
+  .pad {
+    display: grid;
+    grid-template-columns: repeat(3, 56px);
+    grid-template-areas: '. u .' 'l . r' '. d .';
+    gap: 6px;
+    justify-content: center;
+  }
+  .pad button {
+    height: 48px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--fg);
+    font-size: 1.1rem;
+    touch-action: none;
+  }
+  .pad button:nth-child(1) { grid-area: u; }
+  .pad button:nth-child(2) { grid-area: l; }
+  .pad button:nth-child(3) { grid-area: r; }
+  .pad button:nth-child(4) { grid-area: d; }
+}
+@media (max-width: 520px) {
+  .hide-narrow { display: none; }
+  .hud { gap: 12px; font-size: 0.85rem; }
 }

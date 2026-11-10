@@ -1,13 +1,12 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withHashLocation } from '@angular/router';
 
 import { routes } from './app.routes';
-
-// import { GameMenu } from './game-menu/game-menu';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes)
-  ]
+    // Hash URLs (/redrover/#/play) so the game works from any sub-folder on a static host.
+    provideRouter(routes, withHashLocation()),
+  ],
 };

@@ -1,6 +1,17 @@
-/* You can add global styles to this file, and also import other style files */
-
+:root {
+  --bg: #0d0d0f;
+  --fg: #eaeaea;
+  --muted: #8a8a92;
+  --red: #e5383b;
+  --card: #17171b;
+  --border: #26262c;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
 body {
-    background-color: black;
-    color: white;
+  background: radial-gradient(circle at 50% 0%, #2a0d0e 0%, var(--bg) 55%) fixed, var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  line-height: 1.5;
+  overscroll-behavior: none;
 }

@@ -1,9 +1,31 @@
-<div id="title-container">
-    <label id="title-label">RedRover</label>
-</div>
+<main>
+  <p class="eyebrow">A maze-chase on Mars</p>
+  <h1>Red<span>Rover</span></h1>
+  <p class="intro">
+    Your rover is trapped in a drone-patrolled Mars base. Collect every energy cell,
+    stay out of the drones' reach, and use EMP charges to knock them offline.
+  </p>
 
-<h1>Menu works.</h1>
+  <a class="play" routerLink="/play">Play</a>
+  @if (highScore > 0) {
+    <p class="best">Best score: <b>{{ highScore }}</b></p>
+  }
 
+  <section class="how">
+    <div><kbd>←↑↓→</kbd> / <kbd>WASD</kbd> or swipe<span>Steer the rover</span></div>
+    <div><i class="cell"></i>Energy cell<span>Collect them all to clear the base</span></div>
+    <div><i class="emp"></i>EMP charge<span>Drones go offline. Ram them for bonus points</span></div>
+    <div><kbd>P</kbd> / <kbd>Esc</kbd><span>Pause</span></div>
+  </section>
 
-<div id="menu-container">
-</div>
+  <section class="drones">
+    <div><i style="--c: #e5383b"></i><b>Hunter</b><span>Heads straight for you</span></div>
+    <div><i style="--c: #f59e0b"></i><b>Interceptor</b><span>Tries to cut you off</span></div>
+    <div><i style="--c: #c084fc"></i><b>Patroller</b><span>Wanders, until you get close</span></div>
+  </section>
+
+  <footer>
+    <a href="https://exodus.red">exodus.red</a> ·
+    <a href="https://github.com/ExodusRed/RedRover" target="_blank" rel="noopener">Source on GitHub</a>
+  </footer>
+</main>

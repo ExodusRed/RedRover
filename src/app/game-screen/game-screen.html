@@ -1,11 +1,67 @@
-<p>game-screen works!</p>
+@let h = hud();
 
-<!-- {{this.screen_width}}, {{this.screen_height}} -->
+<header class="hud">
+  <a routerLink="/" class="back" aria-label="Back to menu">‹ Menu</a>
+  <span>Level <b>{{ h.level }}</b></span>
+  <span>Score <b>{{ h.score }}</b></span>
+  <span class="hide-narrow">Best <b>{{ h.highScore }}</b></span>
+  <span class="lives" [attr.aria-label]="h.lives + ' lives'">
+    @for (i of [1, 2, 3]; track i) {
+      <i [class.lost]="i > h.lives"></i>
+    }
+  </span>
+</header>
 
-<!-- {{innerWidth}}, {{innerHeight}} -->
+<div
+  class="stage"
+  #stage
+  (touchstart)="onTouchStart($event)"
+  (touchmove)="onTouchMove($event)"
+  (touchend)="onTouchEnd($event)"
+>
+  <canvas #canvas></canvas>
 
-{{this.innerWidth}}, {{this.innerHeight}}
+  @if (h.emp > 0) {
+    <div class="emp-badge">EMP {{ h.emp }}s</div>
+  }
 
+  @switch (h.state) {
+    @case ('ready') {
+      <div class="overlay">
+        <h2>Level {{ h.level }}</h2>
+        <p>Collect all <b>{{ h.cellsLeft }}</b> energy cells.</p>
+        <p class="hint">Press an arrow key or swipe to start</p>
+      </div>
+    }
+    @case ('paused') {
+      <div class="overlay">
+        <h2>Paused</h2>
+        <p class="hint">Press P or tap to continue</p>
+      </div>
+    }
+    @case ('hit') {
+      <div class="overlay soft"><h2 class="red">Signal lost</h2></div>
+    }
+    @case ('clear') {
+      <div class="overlay">
+        <h2>Base cleared!</h2>
+        <p>Bonus <b>+{{ 500 * h.level }}</b></p>
+        <p class="hint">Press Space or tap for the next base</p>
+      </div>
+    }
+    @case ('over') {
+      <div class="overlay">
+        <h2 class="red">Game over</h2>
+        <p>Score <b>{{ h.score }}</b> · Best <b>{{ h.highScore }}</b></p>
+        <p class="hint">Press Space or tap to try again</p>
+      </div>
+    }
+  }
+</div>
 
-
-<!-- <button [NgEvent]="button_call">Test button</button> -->
+<nav class="pad" aria-label="Direction pad">
+  <button (pointerdown)="pad({ x: 0, y: -1 })" aria-label="Up">▲</button>
+  <button (pointerdown)="pad({ x: -1, y: 0 })" aria-label="Left">◀</button>
+  <button (pointerdown)="pad({ x: 1, y: 0 })" aria-label="Right">▶</button>
+  <button (pointerdown)="pad({ x: 0, y: 1 })" aria-label="Down">▼</button>
+</nav>
