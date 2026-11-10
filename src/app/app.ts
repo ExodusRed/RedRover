@@ -14,5 +14,5 @@ import { Home } from './home/home';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('pacman-game');
+  protected readonly title = signal('red-rover');
 }

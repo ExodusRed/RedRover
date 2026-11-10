@@ -1,5 +1,5 @@
 {
-  "name": "pacman-game",
+  "name": "red-rover",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
